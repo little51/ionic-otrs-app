@@ -1,10 +1,10 @@
 <ion-view title="工单列表">
-    <ion-content>
-        <ion-list>
-            <ion-item ng-repeat="ticket in tickets" type="item-text-wrap" href="#/tab/tickets/{{ticket.id}}">
-                <h3>{{ticket.title}}</h3>
-                <p>{{ticket.description}}</p>
-            </ion-item>
-        </ion-list>
-    </ion-content>
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="ticket in tickets" type="item-text-wrap" href="#/tab/tickets/{{ticket.id}}">
+        <h3>{{ticket.title}}</h3>
+        <p>{{ticket.description}}</p>
+      </ion-item>
+    </ion-list>
+  </ion-content>
 </ion-view>
