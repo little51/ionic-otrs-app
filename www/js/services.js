@@ -1,3 +1,4 @@
+//服务实现，业务逻辑
 'use strict';
 
 angular.module('otrsapp.services', ['otrsapp.common']).factory('TicketService', function ($q, CommonService) {
@@ -15,8 +16,8 @@ angular.module('otrsapp.services', ['otrsapp.common']).factory('TicketService', 
                 '<soapenv:Header/>' +
                 '<soapenv:Body>' +
                 '<TicketGet>' +
-                '  <tic:UserLogin>xxx</tic:UserLogin>' +
-                '  <tic:Password>xxx</tic:Password>' +
+                '  <tic:UserLogin>gaoqw</tic:UserLogin>' +
+                '  <tic:Password>little5</tic:Password>' +
                 '  <tic:TicketID>' + ticketId + '</tic:TicketID>' +
                 '</TicketGet>' +
                 '</soapenv:Body>' +
@@ -62,10 +63,10 @@ angular.module('otrsapp.services', ['otrsapp.common']).factory('TicketService', 
                 '<soapenv:Body>' +
                 '<TicketSearch>' +
                 '  <tic:UserLogin>gaoqw</tic:UserLogin>' +
-                '  <tic:Password>xxx</tic:Password>' +
-                '  <tic:Limit>5</tic:Limit>' + 
-                '  <tic:Title>%xxx%</tic:Title> ' +
-                '  <tic:CustomerUserLogin>xxx</tic:CustomerUserLogin>' +
+                '  <tic:Password>little5</tic:Password>' +
+                '  <tic:Limit>5</tic:Limit>' +
+                '  <tic:Title>%平罗%</tic:Title> ' +
+                '  <tic:CustomerUserLogin>平罗县中医院</tic:CustomerUserLogin>' +
                 '</TicketSearch>' +
                 '</soapenv:Body>' +
                 '</soapenv:Envelope>'

@@ -1,3 +1,4 @@
+//XML转JSON
 'use strict';
 
 angular.module('otrsapp.common', [])
