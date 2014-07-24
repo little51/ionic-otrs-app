@@ -1,7 +1,7 @@
 //主控文件，主要包含模块引入、路由配置
 'use strict';
 
-angular.module('otrsapp', ['ionic', 'otrsapp.services', 'otrsapp.controllers'])
+angular.module('otrsapp', ['ionic', 'otrsapp.ticketservices', 'otrsapp.authservices', 'otrsapp.controllers'])
 
 .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
   //$httpProvider.defaults.useXDomain = true;
@@ -40,7 +40,8 @@ angular.module('otrsapp', ['ionic', 'otrsapp.services', 'otrsapp.controllers'])
     url: '/myinfo',
     views: {
       'myinfo-tab': {
-        templateUrl: 'templates/myinfo.html'
+        templateUrl: 'templates/myinfo.html',
+        controller: 'LoginCtrl'
       }
     }
   })
@@ -61,6 +62,19 @@ angular.module('otrsapp', ['ionic', 'otrsapp.services', 'otrsapp.controllers'])
       controller: 'LoginCtrl'
     });
 
-  $urlRouterProvider.otherwise('/login');
+  $urlRouterProvider.otherwise('/tab/tickets');
 
+})
+//登录拦截器
+.run(function ($rootScope, $window, $location, AuthService) {
+  $rootScope.$on("$locationChangeStart", function (event, next, current) {    
+    if (AuthService.isLoggedIn($window)) {
+      //登录
+      //event.preventDefault();
+    } else {
+      //未登录
+      $location.path('/login');
+      //event.preventDefault();
+    }
+  });
 });

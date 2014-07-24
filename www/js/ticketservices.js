@@ -1,8 +1,8 @@
-//服务实现，业务逻辑
+//Ticket服务实现，业务逻辑
 'use strict';
 
-angular.module('otrsapp.services', ['otrsapp.common']).factory('TicketService', function ($q, CommonService) {
-  var getByid = function ($http, ticketId) {
+angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketService', function ($q, CommonService) {
+  var getByid = function ($http, ticketId, sessionId) {
     var deferred = $q.defer();
     var request = $http({
       method: "post",
@@ -16,8 +16,7 @@ angular.module('otrsapp.services', ['otrsapp.common']).factory('TicketService', 
         '<soapenv:Header/>' +
         '<soapenv:Body>' +
         '<TicketGet>' +
-        '  <tic:UserLogin>gaoqw</tic:UserLogin>' +
-        '  <tic:Password>little5</tic:Password>' +
+        '  <tic:SessionID>' + sessionId + '</tic:SessionID>' +
         '  <tic:TicketID>' + ticketId + '</tic:TicketID>' +
         '</TicketGet>' +
         '</soapenv:Body>' +
@@ -48,7 +47,7 @@ angular.module('otrsapp.services', ['otrsapp.common']).factory('TicketService', 
   };
 
 
-  var getAll = function ($http) {
+  var getAll = function ($http, sessionId) {
     var deferred = $q.defer();
     var request = $http({
       method: "post",
@@ -62,12 +61,12 @@ angular.module('otrsapp.services', ['otrsapp.common']).factory('TicketService', 
         '<soapenv:Header/>' +
         '<soapenv:Body>' +
         '<TicketSearch>' +
-        '  <tic:UserLogin>gaoqw</tic:UserLogin>' +
-        '  <tic:Password>little5</tic:Password>' +
+        '  <tic:SessionID>' + sessionId + '</tic:SessionID>' +
         '  <tic:Limit>5</tic:Limit>' +
-        '  <tic:Title>%平罗%</tic:Title> ' +
-        '  <tic:CustomerUserLogin>平罗县中医院</tic:CustomerUserLogin>' +
-        '</TicketSearch>' +
+        '  <tic:QueueIDs>6</tic:QueueIDs> ' +
+        '  <tic:StateTypeIDs>4</tic:StateTypeIDs> ' +
+      //'  <tic:CustomerUserLogin>平罗县中医院</tic:CustomerUserLogin>' +
+      '</TicketSearch>' +
         '</soapenv:Body>' +
         '</soapenv:Envelope>'
     });
@@ -82,7 +81,7 @@ angular.module('otrsapp.services', ['otrsapp.common']).factory('TicketService', 
         childNodes[0];
         var jsonObject = CommonService.xml2json(xml).TicketID;
         for (var i = 0; i < jsonObject.length; i++) {
-          var promise = getByid($http, jsonObject[i]);
+          var promise = getByid($http, jsonObject[i], sessionId);
           promise.then(function (data) {
             ticketsearch.push(data);
           });
@@ -95,10 +94,10 @@ angular.module('otrsapp.services', ['otrsapp.common']).factory('TicketService', 
     return deferred.promise;
   };
 
-  var getOne = function ($http, ticketId) {
+  var getOne = function ($http, ticketId, sessionId) {
     var deferred = $q.defer();
     var tickets = null;
-    var promise = getByid($http, ticketId);
+    var promise = getByid($http, ticketId, sessionId);
     promise.then(function (data) {
       tickets = data;
       deferred.resolve(tickets);
@@ -107,11 +106,11 @@ angular.module('otrsapp.services', ['otrsapp.common']).factory('TicketService', 
   }
 
   return {
-    all: function ($http) {
-      return getAll($http);
+    all: function ($http, sessionId) {
+      return getAll($http, sessionId);
     },
-    get: function ($http, ticketId) {
-      return getOne($http, ticketId);
+    get: function ($http, ticketId, sessionId) {
+      return getOne($http, ticketId, sessionId);
     }
   }
 });
