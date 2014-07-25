@@ -2,8 +2,8 @@
   <ion-content>
     <ion-list>
       <ion-item ng-repeat="ticket in tickets" type="item-text-wrap" href="#/tab/tickets/{{ticket.id}}">
-        <h3>{{ticket.title}}</h3>
-        <p>{{ticket.description}}</p>
+        <h3>{{ticket.created}}&nbsp;{{ticket.queue}}&nbsp;{{ticket.status}}</h3>
+        <p> {{ticket.description}}</p>
       </ion-item>
     </ion-list>
   </ion-content>
