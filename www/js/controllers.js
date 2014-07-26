@@ -4,13 +4,20 @@
 angular.module('otrsapp.controllers', [])
 
 .controller('TicketIndexCtrl', function ($scope, $http, $state, $window, TicketService) {
-  TicketService.all($http, $window.localStorage.auth,
-    $window.localStorage.username).then(function (data) {
-    $scope.tickets = data;
-  });
+  $scope.start = 0 ;
+  $scope.end = 10 ;
+  $scope.getByStartAndEnd = function () {
+    TicketService.getByStartAndEnd($http, $window.localStorage.auth,
+      $window.localStorage.username, $scope.start, $scope.end).then(function (data) {
+      $scope.end += 10 ;
+      $scope.tickets = data;
+      $scope.$broadcast('scroll.infiniteScrollComplete');
+    });
+  }
 })
 
 .controller('TicketDetailCtrl', function ($scope, $http, $stateParams, $window, TicketService) {
+
   TicketService.get($http, $stateParams.ticketId, $window.localStorage.auth).then(function (data) {
     $scope.ticket = data;
   });
@@ -21,7 +28,7 @@ angular.module('otrsapp.controllers', [])
     username: '',
     password: ''
   };
-  $scope.username = $window.localStorage.username ;
+  $scope.username = $window.localStorage.username;
 
   $scope.login = function (credentials) {
     AuthService.login($http, credentials).then(function (data) {

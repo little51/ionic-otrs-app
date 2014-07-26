@@ -17,7 +17,7 @@
 
     <ion-list>
       <ion-item ng-repeat="article in ticket.articles" type="item-text-wrap">
-        <p>{{$index+1}}.&nbsp;{{article.Changed}}&nbsp;{{article.FromRealname}}&nbsp;{{article.Subject}}</p>
+        <h3>{{$index+1}}.&nbsp;{{article.Created}}&nbsp;{{article.FromRealname}}&nbsp;{{article.Subject}}</h3>
         <p>{{article.Body}}</p>
       </ion-item>
     </ion-list>

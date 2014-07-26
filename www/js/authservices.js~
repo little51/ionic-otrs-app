@@ -2,14 +2,14 @@
 'use strict';
 
 angular.module('otrsapp.authservices', []).factory('AuthService', function ($q, CommonService) {
-
+  var wsUrl =  "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector" ;
   return {
     login: function ($http, credentials) {
       var deferred = $q.defer();
-      var wsUrl = "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector";
+
       var request = $http({
         method: "post",
-        url: wsUrl,
+        url: "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector",
         headers: {
           'Content-Type': 'text/xml;charset=UTF-8',
           'Access-Control-Allow-Headers': 'Content-Type'
@@ -19,7 +19,7 @@ angular.module('otrsapp.authservices', []).factory('AuthService', function ($q, 
           '<soapenv:Header/>' +
           '<soapenv:Body>' +
           '<SessionCreate>' +
-          '  <tic:CustomerUserLogin>' + credentials.username +  '</tic:CustomerUserLogin>' +
+          '  <tic:UserLogin>' + credentials.username + '</tic:UserLogin>' +
           '  <tic:Password>' + credentials.password + '</tic:Password>' +
           '</SessionCreate>' +
           '</soapenv:Body>' +
@@ -45,9 +45,8 @@ angular.module('otrsapp.authservices', []).factory('AuthService', function ($q, 
       return deferred.promise;
     },
     logout: function ($window) {
-      if (typeof $window.localStorage.auth != 'undefined') {
-        delete $window.localStorage.auth;
-        delete $window.localStorage.username ;
+      if (typeof $window.localStorage.auth != 'undefined'){
+        delete  $window.localStorage.auth ; 
       }
     },
     isLoggedIn: function ($window) {

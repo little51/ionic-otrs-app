@@ -2,12 +2,11 @@
 'use strict';
 
 angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketService', function ($q, CommonService) {
-  var getByid = function ($http, ticketId, sessionId, ifAll) {
-    var wsUrl = "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector";
+  var getByid = function ($http, ticketId, sessionId) {
     var deferred = $q.defer();
     var request = $http({
       method: "post",
-      url: wsUrl,
+      url: "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector",
       headers: {
         'Content-Type': 'text/xml;charset=UTF-8',
         'Access-Control-Allow-Headers': 'Content-Type'
@@ -19,7 +18,6 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         '<TicketGet>' +
         '  <tic:SessionID>' + sessionId + '</tic:SessionID>' +
         '  <tic:TicketID>' + ticketId + '</tic:TicketID>' +
-        '  <tic:AllArticles>' + ifAll + '</tic:AllArticles>' +
         '</TicketGet>' +
         '</soapenv:Body>' +
         '</soapenv:Envelope>'
@@ -35,30 +33,10 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         childNodes[0].
         childNodes[0];
         var jsonObject = CommonService.xml2json(xml);
-        var status = '';
-        if (jsonObject.StateID = '1') {
-          status = '新建';
-        } else if (jsonObject.StateID = '2') {
-          status = '完成';
-        } else if (jsonObject.StateID = '4') {
-          status = '处理中'
-        } else {
-          status = '挂起';
-        }
-        var Articles = [];
-        if (jsonObject.Article instanceof Array) {
-          Articles = jsonObject.Article;
-        } else {
-          Articles.push(jsonObject.Article);
-        }
         tickets = {
           id: jsonObject.TicketID,
           title: jsonObject.Title,
-          description: Articles[0].Body.substr(0, 20),
-          status: status,
-          created: jsonObject.Created,
-          queue: jsonObject.Queue.replace('队列', ''),
-          articles: Articles
+          description: jsonObject.Created + ' ' + jsonObject.Queue
         };
         deferred.resolve(tickets);
       }
@@ -69,7 +47,7 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
   };
 
 
-  var getAll = function ($http, sessionId, customId) {
+  var getAll = function ($http, sessionId) {
     var deferred = $q.defer();
     var request = $http({
       method: "post",
@@ -84,11 +62,15 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         '<soapenv:Body>' +
         '<TicketSearch>' +
         '  <tic:SessionID>' + sessionId + '</tic:SessionID>' +
-        '  <tic:CustomerUserID>' + customId + '</tic:CustomerUserID>' +
-        '</TicketSearch>' +
+        '  <tic:Limit>5</tic:Limit>' +
+        '  <tic:QueueIDs>6</tic:QueueIDs> ' +
+        '  <tic:StateTypeIDs>4</tic:StateTypeIDs> ' +
+      //'  <tic:CustomerUserLogin>平罗县中医院</tic:CustomerUserLogin>' +
+      '</TicketSearch>' +
         '</soapenv:Body>' +
         '</soapenv:Envelope>'
     });
+    var ticketsearch = [];
     request.success(
       function (html) {
         var xml = null;
@@ -98,7 +80,13 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         childNodes[0].
         childNodes[0];
         var jsonObject = CommonService.xml2json(xml).TicketID;
-        deferred.resolve(jsonObject);
+        for (var i = 0; i < jsonObject.length; i++) {
+          var promise = getByid($http, jsonObject[i], sessionId);
+          promise.then(function (data) {
+            ticketsearch.push(data);
+          });
+        }
+        deferred.resolve(ticketsearch);
       }
     ).error(function (status) {
       deferred.reject(status);
@@ -106,10 +94,10 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
     return deferred.promise;
   };
 
-  var getOne = function ($http, ticketId, sessionId, customId) {
+  var getOne = function ($http, ticketId, sessionId) {
     var deferred = $q.defer();
     var tickets = null;
-    var promise = getByid($http, ticketId, sessionId, customId);
+    var promise = getByid($http, ticketId, sessionId);
     promise.then(function (data) {
       tickets = data;
       deferred.resolve(tickets);
@@ -118,40 +106,11 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
   }
 
   return {
-    getByStartAndEnd: function ($http, sessionId, customId, start, end) {
-      var deferred = $q.defer();
-      var ticketsearch = [];
-      getAll($http, sessionId, customId).then(function (jsonObject) {
-        var ticketIdList = [];
-        if (jsonObject instanceof Array) {
-          ticketIdList = jsonObject;
-        } else {
-          ticketIdList.push(jsonObject);
-        }
-        var j = ticketIdList.length;
-        //结束位不能超过长度
-        if (end > j) {
-          end = j;
-        }
-        //开始位不能大于结束位
-        if (start >= end) {
-          start = end - 10;
-          if (start < 0) {
-            start = 0;
-          }
-        }
-        console.log('起始位置:' + start + ' 结束位置：' + end); 
-        for (var i = start; i < end; i++) {
-          getByid($http, ticketIdList[i], sessionId, 1).then(function (data) {
-            ticketsearch.push(data);
-          });
-        }
-        deferred.resolve(ticketsearch);
-      });
-      return deferred.promise;
+    all: function ($http, sessionId) {
+      return getAll($http, sessionId);
     },
     get: function ($http, ticketId, sessionId) {
-      return getOne($http, ticketId, sessionId, 1);
+      return getOne($http, ticketId, sessionId);
     }
   }
 });

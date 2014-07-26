@@ -3,8 +3,9 @@
     <ion-list>
       <ion-item ng-repeat="ticket in tickets" type="item-text-wrap" href="#/tab/tickets/{{ticket.id}}">
         <h3>{{ticket.created}}&nbsp;{{ticket.queue}}&nbsp;{{ticket.status}}</h3>
-        <p> {{ticket.description}}</p>
+        <p>{{ticket.description}}</p>
       </ion-item>
+      <ion-infinite-scroll distance="1%" icon="ion-loading-c" on-infinite="getByStartAndEnd()">
     </ion-list>
   </ion-content>
 </ion-view>
