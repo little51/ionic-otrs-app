@@ -7,7 +7,7 @@
         <h3>{{ticket.created}}&nbsp;{{ticket.queue}}&nbsp;{{ticket.status}}</h3>
         <p>{{ticket.description}}</p>
       </ion-item>
-      <ion-infinite-scroll distance="10%" icon="ion-loading-c" on-infinite="getByStartAndEnd(true)">
+      <ion-infinite-scroll distance="10%" ng-if="!noMoreItemsAvailable" icon="ion-loading-c" on-infinite="getByStartAndEnd(true)">
     </ion-list>
   </ion-content>
 </ion-view>

@@ -8,8 +8,9 @@ angular.module('otrsapp.controllers', [])
   $scope.end = 0;
   $scope.step = 10;
   $scope.tickets = [];
+  $scope.noMoreItemsAvailable = false;
+
   $scope.getByStartAndEnd = function (stepIt) {
-    console.log(stepIt);
     if (stepIt) {
       $scope.start += $scope.step;
       $scope.end += $scope.step;
@@ -20,6 +21,9 @@ angular.module('otrsapp.controllers', [])
         $scope.tickets = $scope.tickets.concat(data);
       } else {
         $scope.tickets = data;
+      }
+      if (data.length == 0) {
+        $scope.noMoreItemsAvailable = true;
       }
       $scope.$broadcast('scroll.infiniteScrollComplete');
       $scope.$broadcast('scroll.refreshComplete');

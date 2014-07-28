@@ -19,6 +19,7 @@
       <ion-item ng-repeat="article in ticket.articles" type="item-text-wrap">
         <h3>{{$index+1}}.&nbsp;{{article.Created}}&nbsp;{{article.FromRealname}}&nbsp;{{article.Subject}}</h3>
         <p>{{article.Body}}</p>
+        <button class="button button-stable">投诉</input>
       </ion-item>
     </ion-list>
     <p><a class="button button-small icon ion-arrow-left-b" href="#/tab/tickets">返回列表</a>
