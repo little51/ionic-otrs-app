@@ -37,7 +37,7 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         var jsonObject = CommonService.xml2json(xml);
         if (typeof jsonObject.ErrorCode != 'undefined') {
           AuthService.logout($window);
-          deferred.resolve('error');
+          deferred.reject('error');
         } else {
           var status = '';
           if (jsonObject.StateID = '1') {
@@ -146,6 +146,8 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
           }
         }
         console.log('起始位置:' + start + ' 结束位置：' + end);
+        //for 循环同步方法:定义promise数组，将每次循环返回值（promise）压入promise数组
+        //$q.all的回调里，返回上层的承诺deferred.resolve(ticketsearch);
         var promiseFor = [];
         for (var i = start; i < end; i++) {
           promiseFor.push(getByid($http, ticketIdList[i], sessionId, 1).then(function (data) {
