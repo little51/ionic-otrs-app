@@ -4,20 +4,22 @@
 angular.module('otrsapp.controllers', [])
 
 .controller('TicketIndexCtrl', function ($scope, $http, $state, $window, TicketService) {
-  $scope.start = 0 ;
-  $scope.end = 10 ;
+  $scope.start = 0;
+  $scope.end = 10;
+  $scope.step = 10;
+  $scope.tickets = [];
   $scope.getByStartAndEnd = function () {
     TicketService.getByStartAndEnd($http, $window.localStorage.auth,
       $window.localStorage.username, $scope.start, $scope.end).then(function (data) {
-      $scope.end += 10 ;
-      $scope.tickets = data;
+      $scope.start += $scope.step;
+      $scope.end += $scope.step;
+      $scope.tickets = $scope.tickets.concat(data);
       $scope.$broadcast('scroll.infiniteScrollComplete');
     });
   }
 })
 
 .controller('TicketDetailCtrl', function ($scope, $http, $stateParams, $window, TicketService) {
-
   TicketService.get($http, $stateParams.ticketId, $window.localStorage.auth).then(function (data) {
     $scope.ticket = data;
   });

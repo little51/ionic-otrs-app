@@ -1,7 +1,7 @@
 //Ticket服务实现，业务逻辑
 'use strict';
 
-angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketService', function ($q, CommonService) {
+angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketService', function ($q, $window, CommonService, AuthService) {
   var getByid = function ($http, ticketId, sessionId, ifAll) {
     var wsUrl = "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector";
     var deferred = $q.defer();
@@ -35,32 +35,37 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         childNodes[0].
         childNodes[0];
         var jsonObject = CommonService.xml2json(xml);
-        var status = '';
-        if (jsonObject.StateID = '1') {
-          status = '新建';
-        } else if (jsonObject.StateID = '2') {
-          status = '完成';
-        } else if (jsonObject.StateID = '4') {
-          status = '处理中'
+        if (typeof jsonObject.ErrorCode != 'undefined') {
+          AuthService.logout($window);
+          deferred.resolve('error');
         } else {
-          status = '挂起';
+          var status = '';
+          if (jsonObject.StateID = '1') {
+            status = '新建';
+          } else if (jsonObject.StateID = '2') {
+            status = '完成';
+          } else if (jsonObject.StateID = '4') {
+            status = '处理中'
+          } else {
+            status = '挂起';
+          }
+          var Articles = [];
+          if (jsonObject.Article instanceof Array) {
+            Articles = jsonObject.Article;
+          } else {
+            Articles.push(jsonObject.Article);
+          }
+          tickets = {
+            id: jsonObject.TicketID,
+            title: jsonObject.Title,
+            description: Articles[0].Body.substr(0, 20),
+            status: status,
+            created: jsonObject.Created,
+            queue: jsonObject.Queue.replace('队列', ''),
+            articles: Articles
+          };
+          deferred.resolve(tickets);
         }
-        var Articles = [];
-        if (jsonObject.Article instanceof Array) {
-          Articles = jsonObject.Article;
-        } else {
-          Articles.push(jsonObject.Article);
-        }
-        tickets = {
-          id: jsonObject.TicketID,
-          title: jsonObject.Title,
-          description: Articles[0].Body.substr(0, 20),
-          status: status,
-          created: jsonObject.Created,
-          queue: jsonObject.Queue.replace('队列', ''),
-          articles: Articles
-        };
-        deferred.resolve(tickets);
       }
     ).error(function (status) {
       deferred.reject(status);
@@ -118,7 +123,7 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
   }
 
   return {
-    getByStartAndEnd: function ($http, sessionId, customId, start, end) {
+    getByStartAndEnd: function ($http, sessionId, customId, start, end, step) {
       var deferred = $q.defer();
       var ticketsearch = [];
       getAll($http, sessionId, customId).then(function (jsonObject) {
@@ -135,18 +140,21 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         }
         //开始位不能大于结束位
         if (start >= end) {
-          start = end - 10;
+          start = end - step;
           if (start < 0) {
             start = 0;
           }
         }
-        console.log('起始位置:' + start + ' 结束位置：' + end); 
+        console.log('起始位置:' + start + ' 结束位置：' + end);
+        var promiseFor = [];
         for (var i = start; i < end; i++) {
-          getByid($http, ticketIdList[i], sessionId, 1).then(function (data) {
+          promiseFor.push(getByid($http, ticketIdList[i], sessionId, 1).then(function (data) {
             ticketsearch.push(data);
-          });
+          }));
         }
-        deferred.resolve(ticketsearch);
+        $q.all(promiseFor).then(function () {
+          deferred.resolve(ticketsearch);
+        });
       });
       return deferred.promise;
     },

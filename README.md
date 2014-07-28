@@ -8,14 +8,17 @@ a otrs(Open-source Ticket Request System) app base on ionic<br>
 ###下载源码
 git clone https://github.com/little51/ionic-otrs-app.git<br>或download zip
 ###下载依赖包
-在ionic-otrs-app目录下执行：npm install<br>
-为了使用gulp，还需要执行：npm install gulp -g
+* 在ionic-otrs-app目录下执行：npm install 
+* 为了使用gulp，还需要执行：npm install gulp -g
+* 最新版的gulp-connect在windows上由于对盘符大小写判断有误，会出现403错误，具体解决方法如下
+ 修改ionic-otrs-app\node_modules\gulp-connect\node_modules\connect\node_modules\serve-static\node_modules\send\lib\send.js
+* 注释掉第413行,return this.error(403)
 ###启动程序
 gulp
 ###运行App（在浏览器中测试）
 为了解决跨域访问问题
 * Linux：chromium-browser --disable-web-security&
-* Window:chrome浏览器启动项加disable-web-security
+* Window:chrome浏览器启动项加 --disable-web-security
 * http://localhost:8080
 * 用户名：640001 口令:0000
 
