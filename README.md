@@ -13,8 +13,10 @@ git clone https://github.com/little51/ionic-otrs-app.git<br>或download zip
 * 最新版的gulp-connect在windows上由于对盘符大小写判断有误，会出现403错误，具体解决方法如下
  修改ionic-otrs-app\node_modules\gulp-connect\node_modules\connect\node_modules\serve-static\node_modules\send\lib\send.js
 * 注释掉第413行,return this.error(403)
+
 ###启动程序
 gulp
+
 ###运行App（在浏览器中测试）
 为了解决跨域访问问题
 * Linux：chromium-browser --disable-web-security&
