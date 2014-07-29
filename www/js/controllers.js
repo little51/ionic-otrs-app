@@ -34,10 +34,48 @@ angular.module('otrsapp.controllers', [])
   }
 })
 
-.controller('TicketDetailCtrl', function ($scope, $http, $stateParams, $window, TicketService) {
+.controller('TicketDetailCtrl', function ($scope, $http, $stateParams, $window, $ionicPopup, $timeout, TicketService) {
   TicketService.get($http, $stateParams.ticketId, $window.localStorage.auth).then(function (data) {
     $scope.ticket = data;
   });
+
+  $scope.andArticle = function () {
+    $scope.data = {
+      choice: 'A',
+      another: ''
+    };
+    var articleType =
+      '<ion-radio ng-model="data.choice" ng-value="A">处理不及时</ion-radio>' +
+      '<ion-radio ng-model="data.choice" ng-value="B">服务态度差</ion-radio>' +
+      '<ion-radio ng-model="data.choice" ng-value="C">未正确处理</ion-radio>' +
+      '<ion-radio ng-model="data.choice" ng-value="D">其它</ion-radio>' +
+      '<input type="text" ng-model="data.another"></input>';
+
+    var addPopup = $ionicPopup.show({
+      template: articleType,
+      title: '投诉原因',
+      subTitle: '请选择',
+      scope: $scope,
+      buttons: [
+        {
+          text: '放弃'
+        },
+        {
+          text: '<b>保存</b>',
+          type: 'button-positive',
+          onTap: function (e) {
+            return $scope.data;
+          }
+      },
+    ]
+    });
+    addPopup.then(function (res) {
+      console.log(res);
+    });
+    $timeout(function () {
+      addPopup.close();
+    }, 30000);
+  }
 })
 
 .controller('LoginCtrl', function ($rootScope, $scope, $http, $state, $ionicPopup, $window, AuthService) {
@@ -59,7 +97,8 @@ angular.module('otrsapp.controllers', [])
         template: '用户名或口令错误！<br>' + err.ErrorMessage
       });
       loginError.then(function (res) {
-        //console.log('error');
+        / /
+        console.log('error');
       });
     });
   }

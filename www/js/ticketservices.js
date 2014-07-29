@@ -2,8 +2,8 @@
 'use strict';
 
 angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketService', function ($q, $window, CommonService, AuthService) {
+  var wsUrl = "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector";
   var getByid = function ($http, ticketId, sessionId, ifAll) {
-    var wsUrl = "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector";
     var deferred = $q.defer();
     var request = $http({
       method: "post",
@@ -78,7 +78,7 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
     var deferred = $q.defer();
     var request = $http({
       method: "post",
-      url: "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector",
+      url: wsUrl,
       headers: {
         'Content-Type': 'text/xml;charset=UTF-8',
         'Access-Control-Allow-Headers': 'Content-Type'
@@ -125,7 +125,44 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
       deferred.resolve(tickets);
     });
     return deferred.promise;
-  }
+  };
+
+  var updateTicket = function ($http, ticketId, sessionId, customId, body) {
+    var deferred = $q.defer();
+    var request = $http({
+      method: "post",
+      url: wsUrl,
+      headers: {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      },
+      data: '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" ' +
+        'xmlns:tic="http://www.otrs.org/TicketConnector/"> ' +
+        '<soapenv:Header/>' +
+        '<soapenv:Body>' +
+        '<TicketUpdate> ' +
+        '<tic:SessionID>' + sessionId + '</tic:SessionID>' +
+        '<tic:TicketID>' + ticketId + '</tic:TicketID>' +
+        '<tic:Article>' +
+        '<tic:From>' + customId + '</tic:From>' +
+        '<tic:Subject>投诉</tic:Subject>' +
+        '<tic:Body>' + body + '</tic:Body>' +
+        '<tic:Charset>utf8</tic:Charset>' +
+        '<tic:MimeType>text/plain</tic:MimeType>' +
+        '</tic:Article>' +
+        '</TicketUpdate>' +
+        '</soapenv:Body> ' +
+        '</soapenv:Envelope>'
+    });
+    request.success(
+      function (html) {
+        deferred.resolve('updated');
+      }
+    ).error(function (status) {
+      deferred.reject(status);
+    });
+    return deferred.promise;
+  };
 
   return {
     getByStartAndEnd: function ($http, sessionId, customId, start, end, step) {
@@ -169,6 +206,9 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
     },
     get: function ($http, ticketId, sessionId) {
       return getOne($http, ticketId, sessionId, 1);
+    },
+    updateTicket: function ($http, ticketId, sessionId, customId, body) {
+      return updateTicket($http, ticketId, sessionId, customId, body);
     }
   }
 });
