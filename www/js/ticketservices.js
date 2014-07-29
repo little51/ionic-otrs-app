@@ -37,7 +37,7 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         var jsonObject = CommonService.xml2json(xml);
         if (typeof jsonObject.ErrorCode != 'undefined') {
           AuthService.logout($window);
-          deferred.reject('error');
+          deferred.reject('会话过期，请重新登录');
         } else {
           var status = '';
           if (jsonObject.StateID = '1') {
@@ -103,7 +103,12 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         childNodes[0].
         childNodes[0];
         var jsonObject = CommonService.xml2json(xml).TicketID;
-        deferred.resolve(jsonObject);
+        if (typeof jsonObject == 'undefined') {
+          AuthService.logout($window);
+          deferred.reject('会话过期，请重新登录');
+        } else {
+          deferred.resolve(jsonObject);
+        }
       }
     ).error(function (status) {
       deferred.reject(status);
@@ -157,6 +162,8 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         $q.all(promiseFor).then(function () {
           deferred.resolve(ticketsearch);
         });
+      }, function (err) {
+        deferred.reject(err);
       });
       return deferred.promise;
     },

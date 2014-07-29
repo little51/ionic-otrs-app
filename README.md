@@ -2,7 +2,7 @@ ionic-otrs-app
 ==============
 a otrs(Open-source Ticket Request System) app base on ionic<br>
 基于Ionic开发的Otrs(http://www.otrs.com/?lang=zh-hans IT运维管理/客服系统)手机客户端<br>
-主要实现客户查询工单的功能
+主要实现客户查询工单、投诉、加急处理的功能
 
 ##1.运行程序
 ###下载源码
@@ -42,18 +42,18 @@ http://yourhost/otrs/index.pl?Action=AdminGenericInterfaceWebservice<br>
 ##4.文件列表
 index.html       主页面
 js:
-  app.js           路由和模块引入<br>
-  authservices.js  登录控制<br>
-  common.js        xml转json<br>
-  controllers.js   控制器<br>
-  ticketservices.js工单查询服务<br>
-templates:<br>
-  about.html      关于<br>
-  login.html      登录<br>
-  myinfo.html     我的<br>
-  tabs.html       Tab<br>
-  ticket-detail.html 工单详细<br>
-  ticket-index.html  工单索引<br>
+* app.js           路由和模块引入
+* authservices.js  登录控制
+* common.js        xml转json
+* controllers.js   控制器
+* ticketservices.js工单查询服务
+templates:
+* about.html      关于
+* login.html      登录
+* myinfo.html     我的
+* tabs.html       Tab
+* ticket-detail.html 工单详细
+* ticket-index.html  工单索引
 
 ##5.license
 MIT license

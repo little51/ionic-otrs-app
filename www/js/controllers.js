@@ -27,6 +27,9 @@ angular.module('otrsapp.controllers', [])
       }
       $scope.$broadcast('scroll.infiniteScrollComplete');
       $scope.$broadcast('scroll.refreshComplete');
+    }, function (error) {
+      console.log(error);
+      $state.go('login');
     });
   }
 })
@@ -43,7 +46,6 @@ angular.module('otrsapp.controllers', [])
     password: ''
   };
   $scope.username = $window.localStorage.username;
-
   $scope.login = function (credentials) {
     AuthService.login($http, credentials).then(function (data) {
       $window.localStorage.auth = data;
