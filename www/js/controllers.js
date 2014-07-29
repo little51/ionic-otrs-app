@@ -39,17 +39,19 @@ angular.module('otrsapp.controllers', [])
     $scope.ticket = data;
   });
 
+  $scope.selectChange = function (value) {
+    $scope.reason = value;
+  }
   $scope.andArticle = function () {
-    $scope.data = {
-      choice: 'A',
-      another: ''
-    };
+    $scope.reason = "服务态度差";
+    $scope.choice = 'B';
+
     var articleType =
-      '<ion-radio ng-model="data.choice" ng-value="A">处理不及时</ion-radio>' +
-      '<ion-radio ng-model="data.choice" ng-value="B">服务态度差</ion-radio>' +
-      '<ion-radio ng-model="data.choice" ng-value="C">未正确处理</ion-radio>' +
-      '<ion-radio ng-model="data.choice" ng-value="D">其它</ion-radio>' +
-      '<input type="text" ng-model="data.another"></input>';
+      '<ion-radio ng-model="choice" ng-value="A" ng-click="selectChange(\'处理不及时\')">处理不及时</ion-radio>' +
+      '<ion-radio ng-model="choice" ng-value="B" ng-click="selectChange(\'服务态度差\')">服务态度差</ion-radio>' +
+      '<ion-radio ng-model="choice" ng-value="C" ng-click="selectChange(\'未正确处理\')">未正确处理</ion-radio>' +
+      '<ion-radio ng-model="choice" ng-value="D" ng-click="selectChange(\'其它\')">其它</ion-radio>' +
+      '<input type="text" ng-model="reason"></input>';
 
     var addPopup = $ionicPopup.show({
       template: articleType,
@@ -64,7 +66,7 @@ angular.module('otrsapp.controllers', [])
           text: '<b>保存</b>',
           type: 'button-positive',
           onTap: function (e) {
-            return $scope.data;
+            return $scope.reason;
           }
       },
     ]
