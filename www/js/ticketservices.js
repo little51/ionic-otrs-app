@@ -41,9 +41,9 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
           var status = '';
           if (jsonObject.StateType == 'closed') {
             status = '完成';
-          } else if (jsonObject.StateID == 'new') {
+          } else if (jsonObject.StateType == 'new') {
             status = '新建';
-          } else if (jsonObject.StateID == 'open') {
+          } else if (jsonObject.StateType == 'open') {
             status = '处理中'
           } else {
             status = '挂起';
