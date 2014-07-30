@@ -4,34 +4,37 @@
 angular.module('otrsapp.controllers', [])
 
 .controller('TicketIndexCtrl', function ($scope, $http, $state, $window, $ionicPopup, TicketService) {
-  $scope.start = -7;
-  $scope.end = 0;
-  $scope.step = 7;
-  $scope.tickets = [];
-  $scope.noMoreItemsAvailable = false;
+  var init = function () {
+    $scope.start = 0;
+    $scope.end = 7;
+    $scope.step = 7;
+    $scope.max = 0;
+    $scope.tickets = [];
+  };
 
-  $scope.getByStartAndEnd = function (stepIt) {
-    if (stepIt) {
-      $scope.start += $scope.step;
-      $scope.end += $scope.step;
+  $scope.getByStartAndEnd = function (reset) {
+    if (reset) {
+      init();
+    }
+    if ($scope.end <= $scope.max) {
+      return;
     }
     TicketService.getByStartAndEnd($http, $window.localStorage.auth,
       $window.localStorage.username, $scope.start, $scope.end).then(function (data) {
-      if (stepIt) {
+      $scope.max = $scope.end;
+      if ($scope.tickets.length != 0) {
         $scope.tickets = $scope.tickets.concat(data);
       } else {
         $scope.tickets = data;
       }
-      if (data.length == 0) {
-        $scope.noMoreItemsAvailable = true;
-      }
-      $scope.$broadcast('scroll.infiniteScrollComplete');
       $scope.$broadcast('scroll.refreshComplete');
     }, function (error) {
       console.log(error);
       $state.go('login');
     });
-  }
+  };
+
+  $scope.getByStartAndEnd(true);
 
   $scope.setPriority = function (ticket) {
     TicketService.updateTicket($http, ticket.id,
@@ -45,11 +48,20 @@ angular.module('otrsapp.controllers', [])
         console.log('error');
       });
     });
-  }
+  };
+
+  $scope.stepIt = function () {
+    $scope.start += $scope.step;
+    $scope.end += $scope.step;
+    $scope.getByStartAndEnd(false);
+  };
+
+  $scope.showMoreButton = function () {
+    return ($scope.tickets.length >= $scope.step);
+  };
 })
 
 .controller('TicketDetailCtrl', function ($scope, $http, $stateParams, $window, $ionicPopup, $timeout, TicketService) {
-
   $scope.getTicket = function () {
     TicketService.get($http, $stateParams.ticketId, $window.localStorage.auth).then(function (data) {
       $scope.ticket = data;

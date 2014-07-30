@@ -1,15 +1,17 @@
 <ion-view title="工单列表">
   <ion-content>
-    <ion-refresher pulling-text="" on-refresh="getByStartAndEnd(false)">
+    <ion-refresher pulling-text="" on-refresh="getByStartAndEnd(true)">
     </ion-refresher>
     <ion-list>
-      <ion-item ng-repeat="ticket in tickets" type="item-text-wrap" href="#/tab/tickets/{{ticket.id}}">
-        <h3>{{ticket.created}}&nbsp;{{ticket.queue}}&nbsp;{{ticket.status}}</h3>
+      <ion-item ng-repeat="ticket in tickets" type="item-text-wrap" class="item item-icon-right" href="#/tab/tickets/{{ticket.id}}">
+        {{ticket.created}}&nbsp;{{ticket.queue}}&nbsp;{{ticket.status}}
         <span class="badge badge-assertive" ng-show="ticket.status=='新建'">1</span>
-        {{ticket.description}}
+        <span class="icon ion-ios7-arrow-forward" ng-show="ticket.status!='新建'"></span>
+        <p>{{ticket.description}}</p>
         <ion-option-button class="button-positive" ng-click="setPriority(ticket)">加急</ion-option-button>
       </ion-item>
-      <ion-infinite-scroll distance="10%" ng-if="!noMoreItemsAvailable" icon="ion-loading-c" on-infinite="getByStartAndEnd(true)">
+      <!--<ion-infinite-scroll distance="10%" ng-if="!noMoreItemsAvailable" icon="ion-loading-c" on-infinite="getByStartAndEnd(true)">-->
     </ion-list>
+    <button class="button button-light button-full button-clear" ng-show="showMoreButton()" ng-click="stepIt()">更多工单</button>
   </ion-content>
 </ion-view>

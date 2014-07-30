@@ -203,6 +203,10 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
           }));
         }
         $q.all(promiseFor).then(function () {
+          //for 产生的数据由于执行顺序的问题，结果可能不是按顺序排列的，所以要重新排序列
+          ticketsearch.sort(function sortByid(ta, tb) {
+            return tb.id - ta.id;
+          });
           deferred.resolve(ticketsearch);
         });
       }, function (err) {
