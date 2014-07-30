@@ -40,11 +40,11 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
           deferred.reject('会话过期，请重新登录');
         } else {
           var status = '';
-          if (jsonObject.StateID = '1') {
-            status = '新建';
-          } else if (jsonObject.StateID = '2') {
+          if (jsonObject.StateType == 'closed') {
             status = '完成';
-          } else if (jsonObject.StateID = '4') {
+          } else if (jsonObject.StateID == 'new') {
+            status = '新建';
+          } else if (jsonObject.StateID == 'open') {
             status = '处理中'
           } else {
             status = '挂起';
