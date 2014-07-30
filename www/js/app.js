@@ -1,6 +1,8 @@
 //主控文件，主要包含模块引入、路由配置
 'use strict';
 
+var wsUrl = "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector";
+
 angular.module('otrsapp', ['ionic', 'otrsapp.ticketservices', 'otrsapp.authservices', 'otrsapp.controllers'])
 
 .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {

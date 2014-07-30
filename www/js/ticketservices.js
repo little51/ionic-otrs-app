@@ -2,7 +2,6 @@
 'use strict';
 
 angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketService', function ($q, $window, CommonService, AuthService) {
-  var wsUrl = "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector";
   var getByid = function ($http, ticketId, sessionId, ifAll) {
     var deferred = $q.defer();
     var request = $http({

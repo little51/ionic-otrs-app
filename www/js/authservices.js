@@ -6,7 +6,6 @@ angular.module('otrsapp.authservices', []).factory('AuthService', function ($q, 
   return {
     login: function ($http, credentials) {
       var deferred = $q.defer();
-      var wsUrl = "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector";
       var request = $http({
         method: "post",
         url: wsUrl,
