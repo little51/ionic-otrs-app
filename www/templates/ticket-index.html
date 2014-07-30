@@ -6,7 +6,7 @@
       <ion-item ng-repeat="ticket in tickets" type="item-text-wrap" href="#/tab/tickets/{{ticket.id}}">
         <h3>{{ticket.created}}&nbsp;{{ticket.queue}}&nbsp;{{ticket.status}}</h3>
         {{ticket.description}}
-        <ion-option-button class="button-positive">加急</ion-option-button>
+        <ion-option-button class="button-positive" ng-click="setPriority(ticket)">加急</ion-option-button>
       </ion-item>
       <ion-infinite-scroll distance="10%" ng-if="!noMoreItemsAvailable" icon="ion-loading-c" on-infinite="getByStartAndEnd(true)">
     </ion-list>

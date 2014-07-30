@@ -3,7 +3,7 @@
 
 angular.module('otrsapp.controllers', [])
 
-.controller('TicketIndexCtrl', function ($scope, $http, $state, $window, TicketService) {
+.controller('TicketIndexCtrl', function ($scope, $http, $state, $window, $ionicPopup, TicketService) {
   $scope.start = -10;
   $scope.end = 0;
   $scope.step = 10;
@@ -32,17 +32,35 @@ angular.module('otrsapp.controllers', [])
       $state.go('login');
     });
   }
+
+  $scope.setPriority = function (ticket) {
+    TicketService.updateTicket($http, ticket.id,
+      $window.localStorage.auth, $window.localStorage.username, '加急').then(function (data) {
+      var setPrioritySuccess = $ionicPopup.alert({
+        title: '提示',
+        template: '加急处理完成。'
+      });
+      setPrioritySuccess.then(function (res) {
+        //
+        console.log('error');
+      });
+    });
+  }
 })
 
 .controller('TicketDetailCtrl', function ($scope, $http, $stateParams, $window, $ionicPopup, $timeout, TicketService) {
-  TicketService.get($http, $stateParams.ticketId, $window.localStorage.auth).then(function (data) {
-    $scope.ticket = data;
-  });
+
+  $scope.getTicket = function () {
+    TicketService.get($http, $stateParams.ticketId, $window.localStorage.auth).then(function (data) {
+      $scope.ticket = data;
+    });
+  }
+  $scope.getTicket();
 
   $scope.selectChange = function (value) {
     $scope.reason = value;
   }
-  $scope.andArticle = function () {
+  $scope.andArticle = function (article) {
     $scope.reason = "服务态度差";
     $scope.choice = 'B';
 
@@ -66,13 +84,22 @@ angular.module('otrsapp.controllers', [])
           text: '<b>保存</b>',
           type: 'button-positive',
           onTap: function (e) {
-            return $scope.reason;
+            return {
+              ticketId: article.TicketID,
+              reason: article.FromRealname + ' ' +
+                $scope.reason
+            };
           }
       },
     ]
     });
     addPopup.then(function (res) {
-      console.log(res);
+      if (typeof (res) != "undefined") {
+        TicketService.updateTicket($http, res.ticketId,
+          $window.localStorage.auth, $window.localStorage.username, res.reason).then(function (data) {
+          $scope.getTicket();
+        });
+      }
     });
     $timeout(function () {
       addPopup.close();
@@ -85,21 +112,20 @@ angular.module('otrsapp.controllers', [])
     username: '',
     password: ''
   };
-  $scope.username = $window.localStorage.username;
+  $scope.credentials.username = $window.localStorage.username;
   $scope.login = function (credentials) {
     AuthService.login($http, credentials).then(function (data) {
       $window.localStorage.auth = data;
       $window.localStorage.username = credentials.username;
       $state.go('tab.ticket-index');
     }, function (err) {
-      delete $window.localStorage.username;
       delete $window.localStorage.auth;
       var loginError = $ionicPopup.alert({
         title: '登录错误',
         template: '用户名或口令错误！<br>' + err.ErrorMessage
       });
       loginError.then(function (res) {
-        / /
+        //
         console.log('error');
       });
     });
@@ -108,4 +134,10 @@ angular.module('otrsapp.controllers', [])
   $scope.logout = function () {
     AuthService.logout($window);
   }
+})
+
+.controller('AboutCtrl', function ($http, $window, $scope, TicketService) {
+  TicketService.get($http, 1, $window.localStorage.auth).then(function (data) {
+    $scope.about_string = data.articles[0].Body;
+  });
 });

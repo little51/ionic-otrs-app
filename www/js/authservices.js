@@ -19,7 +19,7 @@ angular.module('otrsapp.authservices', []).factory('AuthService', function ($q, 
           '<soapenv:Header/>' +
           '<soapenv:Body>' +
           '<SessionCreate>' +
-          '  <tic:CustomerUserLogin>' + credentials.username +  '</tic:CustomerUserLogin>' +
+          '  <tic:CustomerUserLogin>' + credentials.username + '</tic:CustomerUserLogin>' +
           '  <tic:Password>' + credentials.password + '</tic:Password>' +
           '</SessionCreate>' +
           '</soapenv:Body>' +
@@ -47,7 +47,6 @@ angular.module('otrsapp.authservices', []).factory('AuthService', function ($q, 
     logout: function ($window) {
       if (typeof $window.localStorage.auth != 'undefined') {
         delete $window.localStorage.auth;
-        delete $window.localStorage.username ;
       }
     },
     isLoggedIn: function ($window) {

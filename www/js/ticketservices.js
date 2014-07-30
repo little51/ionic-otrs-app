@@ -141,11 +141,17 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         '<soapenv:Header/>' +
         '<soapenv:Body>' +
         '<TicketUpdate> ' +
-        '<tic:SessionID>' + sessionId + '</tic:SessionID>' +
-        '<tic:TicketID>' + ticketId + '</tic:TicketID>' +
+      //'<tic:SessionID>' + sessionId + '</tic:SessionID>' +
+      '<tic:TicketID>' + ticketId + '</tic:TicketID>' +
+      //'<tic:CustomerUserID>' + customId + '</tic:CustomerUserID>' +
+      '<tic:UserLogin>test</tic:UserLogin>' +
+        '<tic:Password>test</tic:Password>' +
+        '<tic:Ticket>' +
+        '<tic:PriorityID>5</tic:PriorityID>' +
+        '</tic:Ticket>' +
         '<tic:Article>' +
         '<tic:From>' + customId + '</tic:From>' +
-        '<tic:Subject>投诉</tic:Subject>' +
+        '<tic:Subject>用户反馈</tic:Subject>' +
         '<tic:Body>' + body + '</tic:Body>' +
         '<tic:Charset>utf8</tic:Charset>' +
         '<tic:MimeType>text/plain</tic:MimeType>' +
@@ -156,6 +162,7 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
     });
     request.success(
       function (html) {
+        console.log(html);
         deferred.resolve('updated');
       }
     ).error(function (status) {

@@ -50,7 +50,8 @@ angular.module('otrsapp', ['ionic', 'otrsapp.ticketservices', 'otrsapp.authservi
     url: '/about',
     views: {
       'about-tab': {
-        templateUrl: 'templates/about.html'
+        templateUrl: 'templates/about.html',
+        controller: 'AboutCtrl'
       }
     }
   });
@@ -67,7 +68,7 @@ angular.module('otrsapp', ['ionic', 'otrsapp.ticketservices', 'otrsapp.authservi
 })
 //登录拦截器
 .run(function ($rootScope, $window, $location, AuthService) {
-  $rootScope.$on("$locationChangeStart", function (event, next, current) {    
+  $rootScope.$on("$locationChangeStart", function (event, next, current) {
     if (AuthService.isLoggedIn($window)) {
       //登录
       //event.preventDefault();
