@@ -3,13 +3,26 @@
 
 angular.module('otrsapp.controllers', [])
 
-.controller('TicketIndexCtrl', function ($scope, $http, $state, $window, $ionicPopup, TicketService) {
+.controller('TicketIndexCtrl', function ($scope, $http, $state, $window, $ionicPopup, $ionicLoading, TicketService) {
   var init = function () {
     $scope.start = 0;
     $scope.end = 7;
     $scope.step = 7;
     $scope.max = 0;
     $scope.tickets = [];
+  };
+
+  var showLoading = function () {
+    $ionicLoading.show({
+      content: '请稍候 ...',
+      animation: 'fade-in',
+      showBackdrop: true,
+      maxWidth: 200,
+      showDelay: 500
+    });
+  };
+  var hideLoading = function () {
+    $ionicLoading.hide();
   };
 
   $scope.getByStartAndEnd = function (reset) {
@@ -19,6 +32,7 @@ angular.module('otrsapp.controllers', [])
     if ($scope.end <= $scope.max) {
       return;
     }
+    showLoading();
     TicketService.getByStartAndEnd($http, $window.localStorage.auth,
       $window.localStorage.username, $scope.start, $scope.end).then(function (data) {
       $scope.max = $scope.end;
@@ -28,8 +42,9 @@ angular.module('otrsapp.controllers', [])
         $scope.tickets = data;
       }
       $scope.$broadcast('scroll.refreshComplete');
+      hideLoading();
     }, function (error) {
-      console.log(error);
+      hideLoading();
       $state.go('login');
     });
   };
