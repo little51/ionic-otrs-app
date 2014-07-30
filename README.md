@@ -4,6 +4,20 @@ a otrs(Open-source Ticket Request System) app base on ionic<br>
 基于Ionic开发的Otrs(http://www.otrs.com/?lang=zh-hans IT运维管理/客服系统)手机客户端<br>
 主要实现客户查询工单、投诉、加急处理的功能
 
+##0.安装开发环境
+* 安装node.js
+* 安装ionic
+  npm install -g cordova ionic
+* 以下工具打包ap时要用到，在浏览器中运行用不到
+** 安装 jdk
+** 安装 ant
+** 安装 git
+** 安装 android sdk
+* 代码编辑工具推荐brackets
+* ionic参考文档主要有
+http://codepen.io/ionic/public-list/<br>
+http://ionicframework.com/docs/
+
 ##1.运行程序
 ###下载源码
 git clone https://github.com/little51/ionic-otrs-app.git<br>或download zip
@@ -30,6 +44,8 @@ http://yourhost/otrs/index.pl?Action=AdminGenericInterfaceWebservice<br>
 导入 ionic-otrs-app\ws\GenericTicketConnector.yml<br>
 ###修改app中webservice调用指向
 修改 ionic-otrs-app\www\js\app.js中的wsUrl变量值
+* 打包App到Android apk，参见
+  http://ionicframework.com/docs/guide/publishing.html
 
 ##3.用到的技术要点
 * gulp管理包依赖关系

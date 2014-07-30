@@ -4,9 +4,9 @@
 angular.module('otrsapp.controllers', [])
 
 .controller('TicketIndexCtrl', function ($scope, $http, $state, $window, $ionicPopup, TicketService) {
-  $scope.start = -10;
+  $scope.start = -7;
   $scope.end = 0;
-  $scope.step = 10;
+  $scope.step = 7;
   $scope.tickets = [];
   $scope.noMoreItemsAvailable = false;
 
