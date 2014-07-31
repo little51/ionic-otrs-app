@@ -14,11 +14,11 @@ angular.module('otrsapp.controllers', [])
 
   var showLoading = function () {
     $ionicLoading.show({
-      content: '请稍候 ...',
+      content: '<i class="icon ion-loading-c"></i>',
       animation: 'fade-in',
       showBackdrop: true,
       maxWidth: 200,
-      showDelay: 500
+      showDelay: 300
     });
   };
   var hideLoading = function () {
