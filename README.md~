@@ -6,7 +6,7 @@ a otrs(Open-source Ticket Request System) app base on ionic<br>
 
 ##0.安装开发环境
 * 安装node.js
-* 安装ionic<br>
+* 安装ionic
   npm install -g cordova ionic
 * 以下工具打包ap时要用到，在浏览器中运行用不到
 ** 安装 jdk
