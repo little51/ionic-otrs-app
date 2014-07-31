@@ -4,7 +4,7 @@
     <description>
        a otrs(Open-source Ticket Request System) app base on ionic
     </description>
-    <author email="little51@126.com" href="https://github.com/little51/">
+    <author email="little51@126.com" href="https://github.com/little51">
         simon gao
     </author>
     <content src="index.html" />
