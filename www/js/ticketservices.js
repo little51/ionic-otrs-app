@@ -126,6 +126,78 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
     return deferred.promise;
   };
 
+  var createTicket = function ($http, sessionId, customId, title, body) {
+    var deferred = $q.defer();
+    var request = $http({
+      method: "post",
+      url: wsUrl,
+      headers: {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      },
+      data: '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" ' +
+        'xmlns:tic="http://www.otrs.org/TicketConnector/"> ' +
+        '<soapenv:Header/>' +
+        '<soapenv:Body>' +
+        '<TicketCreate>' +
+      //'<tic:SessionID>' + sessionId + '</tic:SessionID>' +
+      //'<tic:CustomerUserID>' + customId + '</tic:CustomerUserID>' +
+      '<tic:UserLogin>test</tic:UserLogin>' +
+        '<tic:Password>test</tic:Password>' +
+        '<tic:Ticket>' +
+        '<tic:Title>' + title + '</tic:Title>' +
+        ' <tic:QueueID>6</tic:QueueID>' +
+        '<tic:PriorityID>2</tic:PriorityID>' +
+        '<tic:TypeID>24</tic:TypeID>' +
+        '<tic:StateID>1</tic:StateID>' +
+        '<tic:OwnerID>1</tic:OwnerID>' +
+        '<tic:LockID>1</tic:LockID>' +
+        '<tic:CustomerUser>' + customId + '</tic:CustomerUser>' +
+        '</tic:Ticket>' +
+        '<tic:Article>' +
+        '<tic:From>' + customId + '</tic:From>' +
+        '<tic:Subject>用户提交</tic:Subject>' +
+        '<tic:Body>' + body + '</tic:Body>' +
+        '<tic:Charset>utf8</tic:Charset>' +
+        '<tic:MimeType>text/plain</tic:MimeType>' +
+        '</tic:Article>' +
+        '</TicketCreate>' +
+        '</soapenv:Body>' +
+        '</soapenv:Envelope>'
+    });
+    request.success(
+      function (html) {
+        var xml = null;
+        var domParser = new DOMParser();
+        xml = domParser.parseFromString(html, 'text/xml').
+        childNodes[0].
+        childNodes[0].
+        childNodes[0];
+        var jsonObject = CommonService.xml2json(xml).TicketID;
+        if (typeof jsonObject == 'undefined') {
+          AuthService.logout($window);
+          deferred.reject('会话过期，请重新登录');
+        } else {
+          deferred.resolve(jsonObject);
+        }
+      }
+    ).error(function (status) {
+      deferred.reject(status);
+    });
+    return deferred.promise;
+  };
+
+  var getOne = function ($http, ticketId, sessionId, customId) {
+    var deferred = $q.defer();
+    var tickets = null;
+    var promise = getByid($http, ticketId, sessionId, customId);
+    promise.then(function (data) {
+      tickets = data;
+      deferred.resolve(tickets);
+    });
+    return deferred.promise;
+  };
+
   var updateTicket = function ($http, ticketId, sessionId, customId, body) {
     var deferred = $q.defer();
     var request = $http({
@@ -219,6 +291,9 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
     },
     updateTicket: function ($http, ticketId, sessionId, customId, body) {
       return updateTicket($http, ticketId, sessionId, customId, body);
+    },
+    createTicket: function ($http, sessionId, customId, title, body) {
+      return createTicket($http, sessionId, customId, title, body);
     }
   }
 });

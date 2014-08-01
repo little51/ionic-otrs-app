@@ -3,7 +3,43 @@
 
 angular.module('otrsapp.controllers', [])
 
-.controller('TicketIndexCtrl', function ($scope, $http, $state, $window, $ionicPopup, $ionicLoading, TicketService) {
+.controller('TicketCreateCtrl', function ($scope, $http, $state, $window, $ionicPopup, $ionicLoading, $ionicModal, TicketService) {
+  $scope.createTicket = function (title, body) {
+    if (typeof title == 'undefined' || typeof body == 'undefined') {
+      var alertPopup = $ionicPopup.alert({
+        title: '提示',
+        template: '联系方式和内容不能为空！'
+      });
+      alertPopup.then(function (res) {
+        console.log('require');
+      });
+      return;
+    }
+    TicketService.createTicket($http, $window.localStorage.auth,
+      $window.localStorage.username, title, body).then(function (data) {
+      var createTicketSuccess = $ionicPopup.alert({
+        title: '提示',
+        template: '问题提交完成。'
+      });
+      createTicketSuccess.then(function (res) {
+        $state.go($state.current, {}, {
+          reload: true
+        });
+        $scope.modal.hide();
+      });
+    }, function (err) {
+      var createTicketSuccess = $ionicPopup.alert({
+        title: '提示',
+        template: err
+      });
+      createTicketSuccess.then(function (res) {
+        console.log(err);
+      });
+    });
+  }
+})
+
+.controller('TicketIndexCtrl', function ($scope, $http, $state, $window, $ionicPopup, $ionicLoading, $ionicModal, TicketService) {
   var init = function () {
     $scope.start = 0;
     $scope.end = 7;
@@ -50,6 +86,13 @@ angular.module('otrsapp.controllers', [])
   };
 
   $scope.getByStartAndEnd(true);
+
+  $ionicModal.fromTemplateUrl('ticket-create.html', function (modal) {
+    $scope.modal = modal;
+  }, {
+    animation: 'slide-in-up',
+    focusFirstInput: true
+  });
 
   $scope.setPriority = function (ticket) {
     TicketService.updateTicket($http, ticket.id,
