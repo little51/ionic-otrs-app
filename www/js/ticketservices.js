@@ -54,14 +54,26 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
           } else {
             Articles.push(jsonObject.Article);
           }
-          tickets = {
-            id: jsonObject.TicketID,
-            title: jsonObject.Title,
-            description: Articles[0].Body.substr(0, 20),
-            status: status,
-            created: jsonObject.Created,
-            queue: jsonObject.Queue.replace('队列', ''),
-            articles: Articles
+          if (ifAll == 1) {
+            tickets = {
+              id: jsonObject.TicketID,
+              title: jsonObject.Title,
+              description: Articles[0].Body.substr(0, 20),
+              status: status,
+              created: jsonObject.Created,
+              queue: jsonObject.Queue.replace('队列', ''),
+              articles: Articles
+            };
+          } else {
+            tickets = {
+              id: jsonObject.TicketID,
+              title: jsonObject.Title,
+              description: jsonObject.Title,
+              status: status,
+              created: jsonObject.Created,
+              queue: jsonObject.Queue.replace('队列', ''),
+              articles: ''
+            };
           };
           deferred.resolve(tickets);
         }
@@ -270,7 +282,7 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         //$q.all的回调里，返回上层的承诺deferred.resolve(ticketsearch);
         var promiseFor = [];
         for (var i = start; i < end; i++) {
-          promiseFor.push(getByid($http, ticketIdList[i], sessionId, 1).then(function (data) {
+          promiseFor.push(getByid($http, ticketIdList[i], sessionId, 0).then(function (data) {
             ticketsearch.push(data);
           }));
         }

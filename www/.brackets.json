@@ -1,0 +1,7 @@
+{
+    "jscodehints.detectedExclusions": [
+        "D:/nodetest/ionic-otrs-app/www/lib/ionic/js/angular/angular.min.js",
+        "D:/nodetest/ionic-otrs-app/www/lib/ionic/js/ionic-angular.min.js",
+        "D:/nodetest/ionic-otrs-app/www/lib/ionic/js/angular/angular-resource.js"
+    ]
+}
