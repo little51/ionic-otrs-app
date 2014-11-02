@@ -1,7 +1,22 @@
 //主控文件，主要包含模块引入、路由配置
 'use strict';
 
-var wsUrl = "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector";
+var wsUrl = "http://61.133.217.140:808/otrs/Webservice";
+//var wsUrl = "http://61.133.217.140:808/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector";
+/*
+为了解决Otrs nph-genericinterface的跨域问题，需要通过apache proxy实现cors,
+修改/etc/httpd/conf/httpd.conf，在最后一行增加：
+<LocationMatch "/otrs/Webservice">
+  ProxyPass http://localhost/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector
+  Header always set Access-Control-Allow-Origin "*"
+  Header always set Access-Control-Allow-Methods "POST,GET,OPTIONS,DELETE,PUT"
+  Header always set Access-Control-Max-Age "1000"
+  Header always set Access-Control-Allow-Headers "Content-Type,x-requested-with,Access-Control-Allow-Headers"
+  RewriteEngine On
+  RewriteCond %{REQUEST_METHOD} OPTIONS
+  RewriteRule ^(.*)$ $1 [R=200,L]
+</LocationMatch>
+*/
 
 angular.module('otrsapp', ['ionic', 'otrsapp.ticketservices', 'otrsapp.authservices', 'otrsapp.controllers'])
 
