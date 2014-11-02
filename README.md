@@ -36,18 +36,18 @@ gulp
 * Linux：chromium-browser --disable-web-security&
 * Window:chrome浏览器启动项加 --disable-web-security
 * 彻底解决跨域问题的方案
-通过apache proxy实现cors,浏览器用正常模式启动
-修改/etc/httpd/conf/httpd.conf，在最后一行增加：
-<LocationMatch "/otrs/Webservice">  #webservice地址变成了http://ip/otrs/Webservice/
-  ProxyPass http://localhost/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector
-  Header always set Access-Control-Allow-Origin "*"
-  Header always set Access-Control-Allow-Methods "POST,GET,OPTIONS,DELETE,PUT"
-  Header always set Access-Control-Max-Age "1000"
-  Header always set Access-Control-Allow-Headers "Content-Type,x-requested-with,Access-Control-Allow-Headers"
-  RewriteEngine On
-  RewriteCond %{REQUEST_METHOD} OPTIONS #跨域时，chrome会先发options请求，但otrs未实现options响应，所以要过滤掉
-  RewriteRule ^(.*)$ $1 [R=200,L]
-</LocationMatch>
+通过apache proxy实现cors,浏览器用正常模式启动<br>
+修改/etc/httpd/conf/httpd.conf，在最后一行增加：<br>
+<LocationMatch "/otrs/Webservice">  #webservice地址变成了http://ip/otrs/Webservice/<br>
+  ProxyPass http://localhost/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector<br>
+  Header always set Access-Control-Allow-Origin "*"<br>
+  Header always set Access-Control-Allow-Methods "POST,GET,OPTIONS,DELETE,PUT"<br>
+  Header always set Access-Control-Max-Age "1000"<br>
+  Header always set Access-Control-Allow-Headers "Content-Type,x-requested-with,Access-Control-Allow-Headers"<br>
+  RewriteEngine On<br>
+  RewriteCond %{REQUEST_METHOD} OPTIONS #跨域时，chrome会先发options请求，但otrs未实现options响应，所以要过滤掉<br>
+  RewriteRule ^(.*)$ $1 [R=200,L]<br>
+</LocationMatch><br>
 
 * http://localhost:8080
 * 用户名：640001 口令:0000
