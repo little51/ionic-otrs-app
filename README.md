@@ -43,7 +43,7 @@ gulp
   ProxyPass http://localhost/otrs/nph-genericinterface.pl/Webservice/GenericTicketConnector
   Header always set Access-Control-Allow-Origin "*"
   Header always set Access-Control-Allow-Methods "POST,GET,OPTIONS,DELETE,PUT"
-  Header always set Access-Control-Max-Age "1000"<br>
+  Header always set Access-Control-Max-Age "1000"
   Header always set Access-Control-Allow-Headers "Content-Type,x-requested-with,Access-Control-Allow-Headers"
   RewriteEngine On
   RewriteCond %{REQUEST_METHOD} OPTIONS #跨域时，chrome会先发options请求，但otrs未实现options响应，所以要过滤掉
