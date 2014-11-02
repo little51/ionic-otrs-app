@@ -35,7 +35,7 @@ gulp
 为了解决跨域访问问题
 * Linux：chromium-browser --disable-web-security&
 * Window:chrome浏览器启动项加 --disable-web-security
-** 彻底解决跨域问题的方案
+* 彻底解决跨域问题的方案
 通过apache proxy实现cors,浏览器用正常模式启动
 修改/etc/httpd/conf/httpd.conf，在最后一行增加：
 <LocationMatch "/otrs/Webservice">  #webservice地址变成了http://ip/otrs/Webservice/
