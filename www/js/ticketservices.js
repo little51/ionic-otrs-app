@@ -39,11 +39,11 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
           deferred.reject('会话过期，请重新登录');
         } else {
           var status = '';
-          if (jsonObject.StateType == 'closed') {
+          if (jsonObject.StateType.Text == 'closed') {
             status = '完成';
-          } else if (jsonObject.StateType == 'new') {
+          } else if (jsonObject.StateType.Text == 'new') {
             status = '新建';
-          } else if (jsonObject.StateType == 'open') {
+          } else if (jsonObject.StateType.Text == 'open') {
             status = '处理中'
           } else {
             status = '挂起';
@@ -56,22 +56,22 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
           }
           if (ifAll == 1) {
             tickets = {
-              id: jsonObject.TicketID,
-              title: jsonObject.Title,
-              description: Articles[0].Body.substr(0, 20),
+              id: jsonObject.TicketID.Text,
+              title: jsonObject.Title.Text,
+              description: Articles[0].Body.Text.substr(0, 20),
               status: status,
-              created: jsonObject.Created,
-              queue: jsonObject.Queue.replace('队列', ''),
+              created: jsonObject.Created.Text,
+              queue: jsonObject.Queue.Text.replace('队列', ''),
               articles: Articles
             };
           } else {
             tickets = {
-              id: jsonObject.TicketID,
-              title: jsonObject.Title,
-              description: jsonObject.Title,
+              id: jsonObject.TicketID.Text,
+              title: jsonObject.Title.Text,
+              description: jsonObject.Title.Text,
               status: status,
-              created: jsonObject.Created,
-              queue: jsonObject.Queue.replace('队列', ''),
+              created: jsonObject.Created.Text,
+              queue: jsonObject.Queue.Text.replace('队列', ''),
               articles: ''
             };
           };
@@ -245,7 +245,6 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
     });
     request.success(
       function (html) {
-        console.log(html);
         deferred.resolve('updated');
       }
     ).error(function (status) {
@@ -282,7 +281,7 @@ angular.module('otrsapp.ticketservices', ['otrsapp.common']).factory('TicketServ
         //$q.all的回调里，返回上层的承诺deferred.resolve(ticketsearch);
         var promiseFor = [];
         for (var i = start; i < end; i++) {
-          promiseFor.push(getByid($http, ticketIdList[i], sessionId, 0).then(function (data) {
+          promiseFor.push(getByid($http, ticketIdList[i].Text, sessionId, 0).then(function (data) {
             ticketsearch.push(data);
           }));
         }

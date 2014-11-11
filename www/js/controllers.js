@@ -155,8 +155,8 @@ angular.module('otrsapp.controllers', [])
           type: 'button-positive',
           onTap: function (e) {
             return {
-              ticketId: article.TicketID,
-              reason: article.FromRealname + ' ' +
+              ticketId: article.TicketID.Text,
+              reason: article.FromRealname.Text + ' ' +
                 $scope.reason
             };
           }
@@ -192,7 +192,7 @@ angular.module('otrsapp.controllers', [])
       delete $window.localStorage.auth;
       var loginError = $ionicPopup.alert({
         title: '登录错误',
-        template: '用户名或口令错误！<br>' + err.ErrorMessage
+        template: '用户名或口令错误！<br>' + err.ErrorMessage.Text
       });
       loginError.then(function (res) {
         //

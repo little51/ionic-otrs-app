@@ -35,7 +35,8 @@ angular.module('otrsapp.authservices', []).factory('AuthService', function ($q, 
           if (xml.nodeName == 'Error') {
             deferred.reject(CommonService.xml2json(xml));
           } else {
-            deferred.resolve(CommonService.xml2json(xml));
+            console.log(CommonService.xml2json(xml).Text);
+            deferred.resolve(CommonService.xml2json(xml).Text);
           }
         }
       ).error(function (status) {

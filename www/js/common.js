@@ -7,12 +7,13 @@ angular.module('otrsapp.common', [])
   return {
     xml2json: function (xml) {
       var obj = {};
-
-      if (xml.children.length > 0) {
-        for (var i = 0; i < xml.children.length; i++) {
-          var item = xml.children.item(i);
+      if (xml.childNodes.length > 0) {
+        for (var i = 0; i < xml.childNodes.length; i++) {
+          var item = xml.childNodes[i];
           var nodeName = item.nodeName;
-
+          if(item.nodeType==3){
+              nodeName = 'Text'  ;
+          }
           if (typeof (obj[nodeName]) == "undefined") {
             obj[nodeName] = this.xml2json(item);
           } else {
